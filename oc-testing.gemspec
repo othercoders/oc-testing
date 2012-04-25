@@ -3,9 +3,9 @@ require File.expand_path('../lib/oc-testing/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ["Chris Hoffman"]
-  gem.email         = ["cehoffman@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.email         = ["cehoffman@othercoders.com"]
+  gem.description   = %q{Default collection of tools for testing ruby applications}
+  gem.summary       = %q{Not only are the tools brought in together and versions matched, but interconnection of tools for smooth operation are made.}
   gem.homepage      = ""
 
   gem.add_runtime_dependency 'minitest-reporters', '~> 0.6.0'
@@ -23,5 +23,5 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "oc-testing"
   gem.require_paths = ["lib"]
-  gem.version       = Oc::Testing::VERSION
+  gem.version       = OC::Testing::VERSION
 end
