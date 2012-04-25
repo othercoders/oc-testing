@@ -32,7 +32,7 @@ module Guard
       paths = paths.select { |path| File.exists?(path) }
       unless paths.empty?
         info "running #{paths.join(', ')}", reset: true
-        run('script/testdrb', '-Itest', *paths, stdout: results = StringIO.new)
+        run('testdrb', '-Itest', *paths, stdout: results = StringIO.new)
         notify results.string.split($/) unless @options[:notify] == false
       end
     end
