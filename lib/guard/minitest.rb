@@ -32,8 +32,7 @@ module Guard
       paths = paths.select { |path| File.exists?(path) }.uniq
       unless paths.empty?
         info "running #{paths.join(', ')}", clear: true
-        cmd = ['testdrb', '-Itest', *paths]
-        run(*cmd, stdout: results = StringIO.new)
+        system 'testdrb', '-Itest', *paths
       end
     end
   end
