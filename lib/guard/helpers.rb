@@ -13,6 +13,7 @@ module Guard
     end
 
     def ui(method, msg, options)
+      UI.clear if options.delete(:clear)
       UI.__send__(method, "#{self.class.name} #{msg}", options)
     end
 
