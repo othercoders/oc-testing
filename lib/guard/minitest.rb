@@ -33,7 +33,6 @@ module Guard
       unless paths.empty?
         info "running #{paths.join(', ')}", clear: true
         cmd = ['testdrb', '-Itest', *paths]
-        cmd << "-r#{File.expand_path('../../minitest/guard_notifying_runner', __FILE__)}" unless @options[:notify] == false
         run(*cmd, stdout: results = StringIO.new)
       end
     end
