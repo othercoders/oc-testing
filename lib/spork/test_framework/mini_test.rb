@@ -9,20 +9,35 @@ class Spork::TestFramework::MiniTest < Spork::TestFramework
     # MiniTest's test/unit does not support -I
     ARGV.clear
     argv.each do |item|
-      if item =~ /-I(.*)/
-        $1.split(File::PATH_SEPARATOR).each { |path| $:.unshift path.strip }
-        true
-      else
-        ARGV << item
+      case item
+      when /^-I(.*)/
+        if $1.empty?
+          argv[i + 1].tap { argv[i + 1] = nil }
+        else
+          $1
+        end.split(File::PATH_SEPARATOR).each do |path|
+          $:.unshift path.strip
+        end
+      when /^-r(.*)/
+        require(if $1.empty?
+          argv[i + 1].tap { argv[i + 1] = nil }
+        else
+          $1
+        end)
+      when /^-e$/
+        eval argv[i + 1]
+        argv[i + 1] = nil
+      when nil
+      else ARGV << item
       end
     end
 
-    # Find the builtin testrb executable and let it run the tests
-    path = ENV['PATH'].split(File::PATH_SEPARATOR).detect do |path|
-      File.exists?(File.join(path, 'testrb'))
+    case RUBY_VERSION
+    when /1\.9\.[321]/
+      ARGV.each { |file| require File.join(Dir.pwd, file) }
+      ::MiniTest::Unit.new.run
+    else
+      puts "Unknown ruby version, don't know how to proceed"
     end
-    load File.join(path, 'testrb')
-
-    ::MiniTest::Unit.new.run(ARGV)
   end
 end

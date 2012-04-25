@@ -29,31 +29,13 @@ module Guard
     end
 
     def run_on_change(paths)
-      paths = paths.select { |path| File.exists?(path) }
+      paths = paths.select { |path| File.exists?(path) }.uniq
       unless paths.empty?
-        info "running #{paths.join(', ')}", reset: true
-        run('testdrb', '-Itest', *paths, stdout: results = StringIO.new)
-        notify results.string.split($/) unless @options[:notify] == false
+        info "running #{paths.join(', ')}", clear: true
+        cmd = ['testdrb', '-Itest', *paths]
+        cmd << "-r#{File.expand_path('../../minitest/guard_notifying_runner', __FILE__)}" unless @options[:notify] == false
+        run(*cmd, stdout: results = StringIO.new)
       end
-    end
-
-    def notify(messages)
-      return if messages.empty? || messages.nil?
-
-      message = messages[-5..-1].reverse.detect { |line| line =~ /assertions/ }
-
-      message.gsub!(/\[\d+m/, '') if message
-      image, message = case message
-                       when /(\d+) tests.*?(\d+) assertions.*?0 failures.*?0 errors.*?0 skips/
-                         [:success, "#$1 Passing test#{'s' if $1.to_i > 1} with #$2 assertion#{'s' if $2.to_i > 1}"]
-                       when /0 failures.*?0 errors.*?(\d+) skips/ then [:pending, "#$1 Pending tests"]
-                       when /(\d+) failures.*?(\d+) errors.*?(\d+) skips/
-                         [:failed, "#$1 Failure#{'s' if $1.to_i > 1}, #$2 Error#{'s' if $2.to_i > 1}, #$3 Pending"]
-                       else [:failed, 'Failed to run command']
-                       end
-
-      Notifier.notify message, title: 'Test Results', image: image
-      # system 'growlnotify', '-n', 'Watchr', '--image', "#{image}.png", '-m', message, 'Test Results' rescue nil
     end
   end
 end

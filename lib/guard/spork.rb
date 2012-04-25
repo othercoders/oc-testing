@@ -60,29 +60,7 @@ module Guard
         Signal.trap('QUIT', 'IGNORE')
         Signal.trap('INT', 'IGNORE')
         Signal.trap('TSTP', 'IGNORE')
-
-        ::Bundler.with_clean_env do
-          # Open3.popen3('rvm', ruby, 'ruby', '-e', 'eval($stdin.read)') do |stdin, stdout, stderr|
-          #   stdin.write <<-RUBY
-          #     begin
-          #       old_verbose, $VERBOSE = $VERBOSE, nil
-          #       ARGV = #{ARGV.inspect}
-          #     ensure
-          #       $VERBOSE = old_verbose
-          #     end
-          #     require 'bundler/setup'
-          #     load Gem.bin_path('sport-testunit', 'testdrb')
-          #   RUBY
-          #   stdin.close
-          #   stdout = thread_stream($stdout, stdout)
-          #   stderr = thread_stream($stderr, stderr)
-
-          #   stdout.join
-          #   stderr.join
-          # end
-          # exec('script/spork', 'MiniTest')
-          exec 'spork'
-        end
+        exec 'spork'
       end
 
       debug "spawned spork #{pid}"
